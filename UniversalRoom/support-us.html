@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -93,11 +93,65 @@ window.onload = setActive;
 
   <!--==============================header=================================-->
   <script src="https://code.jquery.com/jquery-2.1.4.js"></script>
+  <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
   <script>
 
-  $(document).ready(function(){
-    $("#50dollar").hide();
-  })
+      $(document).ready(function () {
+          Stripe.setPublishableKey('pk_test_8hewUrNgF02ewiR34tqrapp0');
+    
+          $("#btnSubmitPayment").click(function (e) {
+          
+              Stripe.card.createToken({
+                  number: $('#txtCC').val(),
+                  cvc: $('#txtSecurityCode').val(),
+                  exp_month: $('#txtExMonth').val(),
+                  exp_year: $('#txtExYear').val()
+              }, stripeResponseHandler);
+
+          })
+
+          function stripeResponseHandler(status, response) {
+
+
+              if (response.error) {
+                  // Show the errors on the form
+                  //$form.find('.payment-errors').text(response.error.message);
+             
+              } else {
+                  // response contains id and card, which contains additional card details
+                  var token = response.id;
+                  var amount = '';
+                  //call function to charge
+                  if ($('#rbTwenty').is(':checked')) { amount = '20';}
+                  if ($('#rbFifty').is(':checked')) { amount = '50'; }
+                  if ($('#rbOneHundred').is(':checked')) { amount = '100'; }
+                  
+                
+                 
+                  $.ajax({
+
+                      type: "POST",
+                      url: "engine.asmx/makeDonation",
+                      data: "{token:'" + token + "',amount:'" + amount + "',email:'" + $("#txtEmail").val() + "'}",
+                      contentType: "application/json; charset=utf-8",
+                      dataType: "json",
+                      success: function (data) {
+                          var result = data.d;
+                      },
+                      failure: function (msg) {
+                          console.log(msg);
+                      },
+                      error: function (err) {
+                          console.log(msg);
+                      }
+                  }) //end ajax 
+
+
+
+              }
+          }
+
+          }) // end doc ready
 
   </script>
 
@@ -110,58 +164,40 @@ window.onload = setActive;
            	   <div class="wrapper" style="text-align:center;">
 
                  <h1 class="home-title post" style="color:#fff;">WE WOULD LOVE TO GET YOUR SUPPORT !</h1>
-
-                 <div style="display:inline-block;margin:1em">
-                   <h2 style="color:white">Donate $20</h2>
-                    <form action="" method="POST">
-                      <script
-                      src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                      data-key="pk_test_zJpyd9c3LPkJj82uAH9JO7do"
-                      data-amount="2000"
-                      data-name="Universal Language Room"
-                      data-description="$20 Donation"
-                      data-image="http://static1.squarespace.com/static/547e6356e4b074c679150215/55240f3ee4b0950523e535f1/5524128be4b0cc480de5a7b0/1428427441733/shop-icon.png"
-                      data-locale="auto">
-                      </script>
-                    </form>
-                 </div>
-                 <div style="display:inline-block;margin:1em">
-                   <h2 style="color:white">Donate $50</h2>
-                    <form action="" method="POST">
-                      <script
-                      src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                      data-key="pk_test_zJpyd9c3LPkJj82uAH9JO7do"
-                      data-amount="5000"
-                      data-name="Universal Language Room"
-                      data-description="$50 Donation"
-                      data-image="http://static1.squarespace.com/static/547e6356e4b074c679150215/55240f3ee4b0950523e535f1/5524128be4b0cc480de5a7b0/1428427441733/shop-icon.png"
-                      data-locale="auto">
-                      </script>
-                    </form>
-                 </div>
-                 <div style="display:inline-block;margin:1em">
-                   <h2 style="color:white">Donate $100</h2>
-                    <form action="" method="POST">
-                      <script
-                      src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                      data-key="pk_test_zJpyd9c3LPkJj82uAH9JO7do"
-                      data-amount="10000"
-                      data-name="Universal Language Room"
-                      data-description="$100 Donation"
-                      data-image="http://static1.squarespace.com/static/547e6356e4b074c679150215/55240f3ee4b0950523e535f1/5524128be4b0cc480de5a7b0/1428427441733/shop-icon.png"
-                      data-locale="auto">
-                      </script>
-                    </form>
-                 </div>
-
-
-
-
-
-
-
-
-
+                    <div>
+                        <h4 style="color:white">Please select an amount</h4>
+                        <br />
+                        <ul >
+                            <li style="display:inline-block;font-size:20px;color:#2aa9e0"><input id="rbTwenty" type="radio" name="payment"/>$20.00</li>
+                            <li style="display:inline-block;font-size:20px;color:#2aa9e0"><input id="rbFifty" type="radio" name="payment" />$50.00</li>
+                            <li style="display:inline-block;font-size:20px;color:#2aa9e0"><input id="rbOneHundred" type="radio" name="payment" />$100.00</li>
+                        </ul>
+                    </div>
+                      <br />
+                   <div>
+                       <h4 style="color:white">Payment Information</h4>
+                       <br />
+                       <ul>
+                           <li style="display:inline-block;font-size:20px;color:#2aa9e0"><input style="font-size:20px;border:none;border-radius:4px;padding:10px" id="txtEmail" type="text" placeholder="Email Address" /></li>
+                       </ul>
+                       <ul style="margin-top:10px">
+                           <li style="display:inline-block;font-size:20px;color:#2aa9e0"><input style="font-size:20px;border:none;border-radius:4px;padding:10px" id="txtCC" type="text" placeholder="Credit Card Number" /></li>
+                       </ul>
+                       <ul style="margin-top:10px">
+                           <li style="display:inline-block;font-size:20px;color:#2aa9e0"><input style="font-size:20px;border:none;border-radius:4px;padding:10px" id="txtExMonth" type="text" placeholder="Expiration Month (MM)" /></li>
+                       </ul>
+                       <ul style="margin-top:10px">
+                           <li style="display:inline-block;font-size:20px;color:#2aa9e0"><input style="font-size:20px;border:none;border-radius:4px;padding:10px" id="txtExYear" type="text" placeholder="Expiration Year (YY)" /></li>
+                       </ul>
+                       <ul style="margin-top:10px">
+                           <li style="display:inline-block;font-size:20px;color:#2aa9e0"><input style="font-size:20px;border:none;border-radius:4px;padding:10px" id="txtSecurityCode" type="text" placeholder="Card Security Code" /></li>
+                       </ul>
+                       <br />
+                       <ul style="margin-top:10px">
+                           <li><a id="btnSubmitPayment" style="padding:15px;padding-left:70px;padding-right:70px;color:white;">Submit</a></li>
+                       </ul>
+                      
+                   </div>
 
                </div>
        </div>

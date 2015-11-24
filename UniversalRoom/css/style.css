@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 /* CSS Document */
 @import url(http://fonts.googleapis.com/css?family=Roboto:400,300,700,500,100);
 
@@ -1035,11 +1035,38 @@ section {
 }
 /********Donate***********/
 
+::-webkit-input-placeholder {
+   color: #a39a9a;
+   padding-top:3px;
+}
+
+:-moz-placeholder { /* Firefox 18- */
+  color: #a39a9a;
+  padding-top:3px;
+}
+
+::-moz-placeholder {  /* Firefox 19+ */
+   color: #a39a9a;
+   padding-top:3px;
+}
+
+:-ms-input-placeholder {  
+   color: #a39a9a;
+   padding-top:3px;
+}
+
+#btnSubmitPayment{
+    background-color:#2aa9e0;
+}
+#btnSubmitPayment:hover{
+    background-color:#23789c;
+}
+
 .donate-block {
 	width: 100%;
 	float: left;
 	background: url(../images/donate-banner.jpg) 0 0 repeat;
-	padding: 480px 0px 0px;
+	padding: 200px 0px 0px;
 	min-height: 768px;
 }
 

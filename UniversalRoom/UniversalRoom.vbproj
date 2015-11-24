@@ -749,6 +749,7 @@
     <Content Include="css\style.css" />
     <Content Include="css\superfish.css" />
     <Content Include="css\timeline.css" />
+    <Content Include="engine.asmx" />
     <Content Include="fonts\bpicons\bpicons.svg" />
     <Content Include="gallery.html" />
     <Content Include="images\abt-head.jpg" />
@@ -909,6 +910,10 @@
     <Content Include="www.twitter.com\universalroom.html" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="engine.asmx.vb">
+      <DependentUpon>engine.asmx</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
