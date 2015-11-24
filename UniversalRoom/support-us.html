@@ -100,6 +100,8 @@ window.onload = setActive;
           Stripe.setPublishableKey('pk_test_8hewUrNgF02ewiR34tqrapp0');
     
           $("#btnSubmitPayment").click(function (e) {
+
+              $("#btnSubmitPayment").text("Processing...");
           
               Stripe.card.createToken({
                   number: $('#txtCC').val(),
@@ -126,8 +128,6 @@ window.onload = setActive;
                   if ($('#rbFifty').is(':checked')) { amount = '50'; }
                   if ($('#rbOneHundred').is(':checked')) { amount = '100'; }
                   
-                
-                 
                   $.ajax({
 
                       type: "POST",
@@ -137,6 +137,13 @@ window.onload = setActive;
                       dataType: "json",
                       success: function (data) {
                           var result = data.d;
+                          $("#btnSubmitPayment").text("Thanks!");
+                          $("#btnSubmitPayment").css("background-color", "#2ca339");
+                          $('#txtCC').val('');
+                          $('#txtSecurityCode').val('');
+                          $('#txtExMonth').val('');
+                          $('#txtExYear').val('');
+                          $('#txtEmail').val('');
                       },
                       failure: function (msg) {
                           console.log(msg);
